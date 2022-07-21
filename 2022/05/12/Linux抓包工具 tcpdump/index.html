@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Linux抓包工具 tcpdump - GO-LINUX</title>
+
+  
+  <meta name="description" content="
+tcpdump是一个功能强大的命令行数据包分析器，它是通过监听服务器的网卡来获取数据包，所有通过网络访问的数据包都能获取到。它也提供了过滤器的功能，可以获取指定的网络、端口或协议的数据包
+程序员日常排查问题，最常用的是使用过滤器功能获取指定端口的数据包，用来分析服务器是否收到请求、请求数据是...">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E6%95%B0%E4%BB%8B%E7%BB%8D"><span class="toc-text">参数介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%8C%85%E5%88%86%E6%9E%90"><span class="toc-text">数据包分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E5%91%BD%E4%BB%A4%E7%BB%84%E5%90%88"><span class="toc-text">常用的命令组合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">注意事项</span></a></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/Linux/">Linux</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-05-12T03:55:09.000Z">2022-05-12</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>Linux抓包工具 tcpdump</span></h1>
+<!--markdown-->
+<p>tcpdump是一个功能强大的命令行数据包分析器，它是通过监听服务器的网卡来获取数据包，所有通过网络访问的数据包都能获取到。它也提供了过滤器的功能，可以获取指定的网络、端口或协议的数据包</p>
+<p>程序员日常排查问题，最常用的是使用过滤器功能获取指定端口的数据包，用来分析服务器是否收到请求、请求数据是否完整。</p>
+<h2 id="参数介绍"><a href="#参数介绍" class="headerlink" title="参数介绍"></a>参数介绍</h2><p>这里只介绍一些常用的参数</p>
+<p><code>-c count</code></p>
+<p><em>count表示数量。抓取数据包的数量达到count后结束命令，如果不使用-c 参数，会不停的抓取数据包，直到手动停止</em></p>
+<p><code>-C file_size</code></p>
+<p><em>抓取数据包保存到文件时，通过该命令指定文件的大小。文件达到指定大小后，会创建一个在原文件名称后面加上序号的新文件，如：dump.txt，dump.txt1。file_size的单位是b</em></p>
+<p><code>-D</code></p>
+<p><em>列出服务器所有网卡。tcpdump默认监听的是编号最小的那个网卡，一般是eth0。在进行抓包时可以通过 -i 参数指定监听的网卡，any表示监听所有网卡</em></p>
+<p><code>-i interface</code></p>
+<p><em>指定监听的网卡名称，any表示监听所有的网卡</em></p>
+<p><code>-n</code></p>
+<p><em>输出结果中，不把ip转换成主机名（默认显示的是主机名）</em></p>
+<p><code>-q</code></p>
+<p><em>快速输出，只输出简要的数据包信息</em></p>
+<p><code>-r file</code></p>
+<p><em>从文件中获取数据包，不再从网络获取数据包</em></p>
+<p><code>-t</code></p>
+<p><em>不输出时间戳</em></p>
+<p><code>-w file</code></p>
+<p><em>将抓取的数据包保存到文件，-r 参数可以从文件中读取数据包</em></p>
+<p><code>-W filecount</code></p>
+<p><em>指定文件的数量，当文件滚动到指定数量后会从第一个文件开始覆盖</em></p>
+<p>除了以上参数，还有一些关键字可以用来进行条件过滤，常用关键字如下</p>
+<p><code>-host</code></p>
+<p><em>过滤主机，如 tcpdump host 192.168.1.110 只抓取经过这个ip的数据包</em></p>
+<p><code>-src</code></p>
+<p><em>用来过滤请求来源方的参数，如：tcpdump src host 192.168.1.110</em> <em>只抓取从这个ip过来的数据包</em></p>
+<p><code>-dst</code></p>
+<p><em>用来过滤请求接收方的参数，如：tcpdump dst host 192.168.1.110</em> <em>只抓取发送到这个ip的数据包</em></p>
+<p><code>-port</code></p>
+<p><em>过滤端口，如：tcpdump port 8080</em> <em>只抓取经过8080端口的数据包</em></p>
+<p><code>-net</code></p>
+<p><em>过滤网络，如：tcpdump net 192.168 只抓取经过这个网段的数据包</em></p>
+<p><code>-and、not、or</code></p>
+<p><em>条件过滤，和字面意思一样。如：tcpdump net 192.168 and port 8080 抓取经过192.168网段并经过8080端口的数据包</em></p>
+<h2 id="数据包分析"><a href="#数据包分析" class="headerlink" title="数据包分析"></a>数据包分析</h2><p>抓取的数据包格式如下</p>
+<figure class="highlight dns"><table><tr><td class="code"><pre><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.929410</span> IP blog.<span class="number">12222</span> &gt; <span class="number">113.249.208.223</span>.<span class="number">24918</span>: Flags [P.], seq <span class="number">2882110792</span>:<span class="number">2882110988</span>, ack <span class="number">3487855706</span>, win <span class="number">264</span>, length <span class="number">196</span></span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.929768</span> IP blog.<span class="number">52847</span> &gt; <span class="number">183.60.83.19</span>.domain: <span class="number">21205</span>+ <span class="keyword">PTR</span>? <span class="number">223.208.249.113</span>.in-addr.arpa. (<span class="number">46</span>)</span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.931256</span> IP <span class="number">183.60.83.19</span>.domain &gt; blog.<span class="number">52847</span>: <span class="number">21205</span> NXDomain <span class="number">0</span>/<span class="number">1</span>/<span class="number">0</span> (<span class="number">134</span>)</span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.932028</span> IP blog.<span class="number">46149</span> &gt; <span class="number">183.60.83.19</span>.domain: <span class="number">57878</span>+ <span class="keyword">PTR</span>? <span class="number">11.4.0.10</span>.in-addr.arpa. (<span class="number">40</span>)</span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.932259</span> IP <span class="number">183.60.83.19</span>.domain &gt; blog.<span class="number">46149</span>: <span class="number">57878</span> NXDomain <span class="number">0</span>/<span class="number">1</span>/<span class="number">0</span> (<span class="number">99</span>)</span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.932365</span> IP blog.<span class="number">46550</span> &gt; <span class="number">183.60.83.19</span>.domain: <span class="number">31382</span>+ <span class="keyword">PTR</span>? <span class="number">19.83.60.183</span>.in-addr.arpa. (<span class="number">43</span>)</span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.932403</span> IP blog.<span class="number">12222</span> &gt; <span class="number">113.249.208.223</span>.<span class="number">24918</span>: Flags [P.], seq <span class="number">196:376</span>, ack <span class="number">1</span>, win <span class="number">264</span>, length <span class="number">180</span></span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.933288</span> IP <span class="number">183.60.83.19</span>.domain &gt; blog.<span class="number">46550</span>: <span class="number">31382</span> NXDomain <span class="number">0</span>/<span class="number">1</span>/<span class="number">0</span> (<span class="number">107</span>)</span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.933482</span> IP blog.<span class="number">12222</span> &gt; <span class="number">113.249.208.223</span>.<span class="number">24918</span>: Flags [P.], seq <span class="number">376:1068</span>, ack <span class="number">1</span>, win <span class="number">264</span>, length <span class="number">692</span></span><br><span class="line"><span class="number">19</span>:<span class="number">51</span>:<span class="number">25.933512</span> IP blog.<span class="number">12222</span> &gt; <span class="number">113.249.208.223</span>.<span class="number">24918</span>: Flags [P.], seq <span class="number">1068:1216</span>, ack <span class="number">1</span>, win <span class="number">264</span>, length <span class="number">148</span></span><br></pre></td></tr></table></figure>
+
+<p><code>20:17:43.496528</code></p>
+<p><em>时间戳，时:分:秒.微秒</em></p>
+<p><code>IP</code></p>
+<p><em>网际网络协议的名称</em></p>
+<p><code>180.101.49.12.http &gt; iZbp14w0b2rs7i1400bjjmZ.42468180.101.49.12.http</code></p>
+<p><em>请求发送方的ip和端口 &gt; 请求接收方的ip和端口。端口有时会显示为某个网络协议，如http、ssh、mysql等</em></p>
+<p><code>Flags [R]</code></p>
+<p><em>flag标识和状态，可选的状态有： [S.] [.] [P.] [F.][R]</em></p>
+<p><code>seq、ack、fin</code></p>
+<p><em>表示tcp协议的3次握手和4次挥手的过程。seq表示请求的序列号，ack是回答的序列号，fin表示完成。这里显示的序列号是相对值，-S参数可以显示绝对值</em></p>
+<p><code>win</code></p>
+<p><em>表示当前窗口的可用大小</em></p>
+<p><code>length</code></p>
+<p><em>表示报文体的长度，从长度可以简单分析是否正确接收了请求</em></p>
+<p>通过以上结果只能做简单的分析，可以使用-w参数把数据包写入文件，文件中记录的数据包比命令行要详细的多。借助分析工具可以对文件进一步分析，这里推荐使用Wireshark，这个工具是开源的，开箱即用使用简单，这里不做详细介绍了</p>
+<h2 id="常用的命令组合"><a href="#常用的命令组合" class="headerlink" title="常用的命令组合"></a>常用的命令组合</h2><p>抓取8080端口的数据包</p>
+<figure class="highlight pf"><table><tr><td class="code"><pre><span class="line">tcpdump -i <span class="literal">any</span> <span class="keyword">port</span> <span class="number">8080</span> </span><br></pre></td></tr></table></figure>
+
+<p>抓取从192.168.1.110发送到192.168.1.111的数据包</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">tcpdump</span> -i any src host <span class="number">192.168.1.110</span> and dst host <span class="number">192.168.1.111</span></span><br></pre></td></tr></table></figure>
+
+<p>抓取192.168网段除了192.168.1.110的请求的数据包</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">tcpdump</span> -i any src net <span class="number">192</span>.<span class="number">168</span> and &#x27;src host not <span class="number">192.168.1.110</span>&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>抓取8080端口的数据包并写入dump.log文件中</p>
+<figure class="highlight pf"><table><tr><td class="code"><pre><span class="line">tcpdump -i <span class="literal">any</span> <span class="keyword">port</span> <span class="number">8080</span> -w dump.<span class="keyword">log</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>1.tcpdump需要用管理员权限运行，可以用sudo命令或者root用户</p>
+<p>2.抓取的数据包通过length字段只能做一些简单的判断，想要详细分析，需要借助数据包分析工具，如：Wireshark</p>
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/05/12/Linux%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%20tcpdump/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/05/12/Linux%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%20tcpdump/&title=Linux抓包工具 tcpdump - GO-LINUX&summary=
+tcpdump是一个功能强大的命令行数据包分析器，它是通过监听服务器的网卡来获取数据包，所有通过网络访问的数据包都能获取到。它也提供了过滤器的功能，可以获取指定的网络、端口或协议的数据包
+程序员日常排查问题，最常用的是使用过滤器功能..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=Linux抓包工具 tcpdump - GO-LINUX&amp;body=https://go-linux.cn/2022/05/12/Linux%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%20tcpdump/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/05/12/Linux%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%20tcpdump/index.html"/></div></div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/05/12/CentOS%E7%B3%BB%E7%BB%9F%E5%88%9D%E5%A7%8B%E5%8C%96%E8%84%9A%E6%9C%AC/">CentOS系统初始化脚本<span class="note">较早</span></a><div class="line"></div><a id="prev" href="/2022/05/20/linux%E9%99%90%E5%88%B6root%E7%94%A8%E6%88%B7ssh%E7%99%BB%E5%BD%95%EF%BC%8C%E8%AE%BE%E7%BD%AE%E7%89%B9%E5%AE%9A%E7%9A%84%E7%94%A8%E6%88%B7%E6%89%8D%E8%83%BDsu%E5%88%B0root/">linux限制root用户ssh登录，设置特定的用户才能su到root<span class="note">较新</span></a></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      快来参与讨论吧
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="Xianghs/blog-comments" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">博客</span><a href="/">近期</a><a href="/categories/">分类</a><a href="/archives/">归档</a></div><div class="sitemap-group"><span class="fs14">社交</span><a href="/friends/">友链</a><a href="/about/#comments">留言板</a><a href="/about/">关于本站</a></div></div><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://go-linux.cn/">@Xianghs</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0" title="v1.8.0">Stellar</a> 作为主题。</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">渝ICP备2022005868号-1</a></p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

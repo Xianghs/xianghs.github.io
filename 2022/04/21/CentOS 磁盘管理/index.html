@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>CentOS 磁盘管理 - GO-LINUX</title>
+
+  
+  <meta name="description" content="
+磁盘情况查询1.查看磁盘挂载情况  lsblk[root@CentOS01 ~]# lsblkNAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTsda               8:0    0   20G  0 disk ├─sda1 ...">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E6%83%85%E5%86%B5%E6%9F%A5%E8%AF%A2"><span class="toc-text">磁盘情况查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD%E6%83%85%E5%86%B5-lsblk"><span class="toc-text">1.查看磁盘挂载情况  lsblk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9F%A5%E8%AF%A2%E7%A3%81%E7%9B%98%E5%AE%9E%E7%94%A8%E6%83%85%E5%86%B5-df-h"><span class="toc-text">2.查询磁盘实用情况  df -h</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9F%A5%E8%AF%A2%E6%8C%87%E5%AE%9A%E7%9B%AE%E5%BD%95%E7%9A%84%E7%A3%81%E7%9B%98%E5%8D%A0%E7%94%A8%E6%83%85%E5%86%B5-du"><span class="toc-text">3.查询指定目录的磁盘占用情况  du</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%EF%BC%9A%E6%9F%A5%E8%AF%A2home%E7%9B%AE%E5%BD%95%E7%9A%84%E7%A3%81%E7%9B%98%E5%8D%A0%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-text">实例：查询home目录的磁盘占用情况</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E6%8C%82%E8%BD%BD%E7%BB%8F%E5%85%B8%E6%A1%88%E4%BE%8B"><span class="toc-text">磁盘挂载经典案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%BB%99%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%A2%9E%E5%8A%A0%E7%A1%AC%E7%9B%98"><span class="toc-text">1.给虚拟机增加硬盘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BB%99%E6%96%B0%E7%A1%AC%E7%9B%98%E5%88%86%E5%8C%BA"><span class="toc-text">2.给新硬盘分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%96%B0%E5%88%86%E5%8C%BA"><span class="toc-text">3.格式化新分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%8C%82%E8%BD%BD%E7%A3%81%E7%9B%98"><span class="toc-text">4.挂载磁盘</span></a></li></ol></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/">磁盘管理</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-04-21T05:17:00.000Z">2022-04-21</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>CentOS 磁盘管理</span></h1>
+<!--markdown-->
+<h2 id="磁盘情况查询"><a href="#磁盘情况查询" class="headerlink" title="磁盘情况查询"></a>磁盘情况查询</h2><h3 id="1-查看磁盘挂载情况-lsblk"><a href="#1-查看磁盘挂载情况-lsblk" class="headerlink" title="1.查看磁盘挂载情况  lsblk"></a>1.查看磁盘挂载情况  lsblk</h3><figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">[root@CentOS01 ~]# lsblk</span><br><span class="line">NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT</span><br><span class="line">sda               8:0    0   20G  0 disk </span><br><span class="line">├─sda1            8:1    0    1G  0 part /boot</span><br><span class="line">└─sda2            8:2    0   19G  0 part </span><br><span class="line">  ├─centos-root 253:0    0   17G  0 lvm  /</span><br><span class="line">  └─centos-swap 253:1    0    2G  0 lvm  [SWAP]</span><br><span class="line">sr0              11:0    1  973M  0 rom  </span><br><span class="line"></span><br><span class="line">[root@CentOS01 ~]# lsblk -f</span><br><span class="line">NAME            FSTYPE      LABEL           UUID                                   MOUNTPOINT</span><br><span class="line">sda                                                                                </span><br><span class="line">├─sda1          xfs                         e7ef5880<span class="string">-8</span>f6e<span class="string">-42</span>d5-a21b<span class="string">-1</span>e14b341613f   /boot</span><br><span class="line">└─sda2          LVM2_member                 pk7lLP-pNIp<span class="string">-5</span>YKI-jFTO-SgTt-YjCt-ipxR3h </span><br><span class="line">  ├─centos-root xfs                         1c9b69c0<span class="string">-9</span>ab7<span class="string">-44</span>e1<span class="string">-811</span>b-eb82608660d3   /</span><br><span class="line">  └─centos-swap swap                        834b7e69<span class="string">-489</span>a<span class="string">-4</span>dd8<span class="string">-8333</span>-c0fdb10d8662   [SWAP]</span><br><span class="line">sr0             iso9660     CentOS 7 x86_64 2020<span class="string">-11</span><span class="string">-03</span><span class="string">-14</span><span class="string">-55</span><span class="string">-29</span><span class="string">-00</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="2-查询磁盘实用情况-df-h"><a href="#2-查询磁盘实用情况-df-h" class="headerlink" title="2.查询磁盘实用情况  df -h"></a>2.查询磁盘实用情况  df -h</h3><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">[root@CentOS01 ~]<span class="comment"># df -h</span></span><br><span class="line">Filesystem               Size  Used Avail Use% Mounted on</span><br><span class="line">devtmpfs                 <span class="number">898</span>M     <span class="number">0</span>  <span class="number">898</span>M   <span class="number">0</span>% /dev</span><br><span class="line">tmpfs                    <span class="number">910</span>M     <span class="number">0</span>  <span class="number">910</span>M   <span class="number">0</span>% <span class="regexp">/dev/</span>shm</span><br><span class="line">tmpfs                    <span class="number">910</span>M  <span class="number">9.5</span>M  <span class="number">901</span>M   <span class="number">2</span>% /run</span><br><span class="line">tmpfs                    <span class="number">910</span>M     <span class="number">0</span>  <span class="number">910</span>M   <span class="number">0</span>% <span class="regexp">/sys/</span>fs/cgroup</span><br><span class="line"><span class="regexp">/dev/m</span>apper<span class="regexp">/centos-root   17G  2.2G   15G  13% /</span></span><br><span class="line"><span class="regexp">/dev/</span>sda1               <span class="number">1014</span>M  <span class="number">150</span>M  <span class="number">865</span>M  <span class="number">15</span>% /boot</span><br><span class="line"><span class="regexp">/dev/</span>sdb1                 <span class="number">20</span>G   <span class="number">45</span>M   <span class="number">19</span>G   <span class="number">1</span>% /newdisk</span><br><span class="line">tmpfs                    <span class="number">182</span>M     <span class="number">0</span>  <span class="number">182</span>M   <span class="number">0</span>% <span class="regexp">/run/u</span>ser/<span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-查询指定目录的磁盘占用情况-du"><a href="#3-查询指定目录的磁盘占用情况-du" class="headerlink" title="3.查询指定目录的磁盘占用情况  du"></a>3.查询指定目录的磁盘占用情况  du</h3><p>基本语法</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-s</td>
+<td>指定目录占用大小汇总</td>
+</tr>
+<tr>
+<td>-h</td>
+<td>带计量单位</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>含文件</td>
+</tr>
+<tr>
+<td>–max-depth&#x3D;1</td>
+<td>子目录深度</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>列出明细同时，增加汇总值</td>
+</tr>
+</tbody></table>
+<h4 id="实例：查询home目录的磁盘占用情况"><a href="#实例：查询home目录的磁盘占用情况" class="headerlink" title="实例：查询home目录的磁盘占用情况"></a>实例：查询home目录的磁盘占用情况</h4><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">[root@CentOS01 ~]<span class="comment"># du -hac /home</span></span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>test.tar.gz</span><br><span class="line"><span class="number">0</span>    <span class="regexp">/home/</span>home<span class="regexp">/test/</span>file1</span><br><span class="line"><span class="number">0</span>    <span class="regexp">/home/</span>home<span class="regexp">/test/</span>file2</span><br><span class="line"><span class="number">0</span>    <span class="regexp">/home/</span>home/test</span><br><span class="line"><span class="number">0</span>    <span class="regexp">/home/</span>home</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>tom/.bash_logout</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>tom/.bash_profile</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>tom/.bashrc</span><br><span class="line"><span class="number">0</span>    <span class="regexp">/home/</span>tom/tom.txt</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>tom/.bash_history</span><br><span class="line"><span class="number">16</span>K    <span class="regexp">/home/</span>tom</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>fox/.bash_logout</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>fox/.bash_profile</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>fox/.bashrc</span><br><span class="line"><span class="number">0</span>    <span class="regexp">/home/</span>fox/orange.txt</span><br><span class="line"><span class="number">4.0</span>K    <span class="regexp">/home/</span>fox/.bash_history</span><br><span class="line"><span class="number">16</span>K    <span class="regexp">/home/</span>fox</span><br><span class="line"><span class="number">36</span>K    /home</span><br><span class="line"><span class="number">36</span>K    total</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="磁盘挂载经典案例"><a href="#磁盘挂载经典案例" class="headerlink" title="磁盘挂载经典案例"></a>磁盘挂载经典案例</h2><h3 id="1-给虚拟机增加硬盘"><a href="#1-给虚拟机增加硬盘" class="headerlink" title="1.给虚拟机增加硬盘"></a>1.给虚拟机增加硬盘</h3><p>添加硬盘，并重启虚拟机</p>
+<h3 id="2-给新硬盘分区"><a href="#2-给新硬盘分区" class="headerlink" title="2.给新硬盘分区"></a>2.给新硬盘分区</h3><p> 分区命令</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="comment">#对磁盘 sdb进行分区</span></span><br><span class="line"><span class="attribute">fdisk</span> /dev/sdb</span><br><span class="line"></span><br><span class="line"><span class="comment">#输入n，添加分区</span></span><br><span class="line"><span class="attribute">Command</span> (m for help): n</span><br><span class="line">   </span><br><span class="line"><span class="comment">#输入p，表示创建主分区</span></span><br><span class="line"><span class="attribute">Select</span> (default p): p</span><br><span class="line"></span><br><span class="line"><span class="comment">#输入1，表示创建一个分区</span></span><br><span class="line"><span class="attribute">Partition</span> number (<span class="number">1</span>-<span class="number">4</span>, default <span class="number">1</span>): <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#直接按回车，表示默认起始扇区2048</span></span><br><span class="line"><span class="attribute">First</span> sector (<span class="number">2048</span>-<span class="number">41943039</span>, default <span class="number">2048</span>): </span><br><span class="line"></span><br><span class="line"><span class="comment">#直接按回车，表示默认截止扇区</span></span><br><span class="line"><span class="attribute">Last</span> sector, +sectors or +size&#123;K,M,G&#125; (<span class="number">2048</span>-<span class="number">41943039</span>, default <span class="number">41943039</span>): </span><br><span class="line"></span><br><span class="line"><span class="comment">#分区完成，输入w，写入分区并退出，分区完成</span></span><br><span class="line"><span class="attribute">Command</span> (m for help): w</span><br><span class="line"><span class="attribute">The</span> partition table has been altered!</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-格式化新分区"><a href="#3-格式化新分区" class="headerlink" title="3.格式化新分区"></a>3.格式化新分区</h3><p>格式化</p>
+<blockquote>
+<p>格式化完成的分区才会拥有UUID，才能进行挂载</p>
+</blockquote>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">mkfs -t ext4 <span class="regexp">/dev/</span>sdb1</span><br><span class="line"><span class="comment">#ext4表示分区类型，sdb1为要格式化的分区</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-挂载磁盘"><a href="#4-挂载磁盘" class="headerlink" title="4.挂载磁盘"></a>4.挂载磁盘</h3><p>命令行挂载</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line">mount <span class="regexp">/dev/</span>sdb1 /newdisk</span><br><span class="line">#<span class="regexp">/dev/</span>sdb1为磁盘分区，/newdisk为挂载的目录</span><br></pre></td></tr></table></figure>
+
+<p>永久挂载</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">vim <span class="regexp">/etc/</span>fstab</span><br><span class="line">添加如下记录，即可将sdb1永久挂载到newdisk</span><br><span class="line"><span class="regexp">/dev/</span>sdb1       /newdisk    ext4     defaults     <span class="number">0</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/04/21/CentOS%20%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/04/21/CentOS%20%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/&title=CentOS 磁盘管理 - GO-LINUX&summary=
+磁盘情况查询1.查看磁盘挂载情况  lsblk[root@CentOS01 ~]# lsblkNAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTsda               ..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=CentOS 磁盘管理 - GO-LINUX&amp;body=https://go-linux.cn/2022/04/21/CentOS%20%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/04/21/CentOS%20%E7%A3%81%E7%9B%98%E7%AE%A1%E7%90%86/index.html"/></div></div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/02/24/%E8%BF%90%E7%BB%B4%E5%B7%A5%E7%A8%8B%E5%B8%88%E8%81%8C%E4%B8%9A%E6%8A%80%E8%83%BD%E5%9B%BE%E8%B0%B1/">运维工程师职业技能图谱<span class="note">较早</span></a><div class="line"></div><a id="prev" href="/2022/04/25/CentOS%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">CentOS网络配置<span class="note">较新</span></a></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      快来参与讨论吧
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="Xianghs/blog-comments" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">博客</span><a href="/">近期</a><a href="/categories/">分类</a><a href="/archives/">归档</a></div><div class="sitemap-group"><span class="fs14">社交</span><a href="/friends/">友链</a><a href="/about/#comments">留言板</a><a href="/about/">关于本站</a></div></div><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://go-linux.cn/">@Xianghs</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0" title="v1.8.0">Stellar</a> 作为主题。</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">渝ICP备2022005868号-1</a></p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

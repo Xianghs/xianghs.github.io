@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>SPL命令 - GO-LINUX</title>
+
+  
+  <meta name="description" content="
+match 筛选类似sql的where
+#筛选目的节点为&quot;网易&quot;的数据match 目的节点=&quot;网易&quot;#筛选目的节点不是&quot;网易&quot;的数据match 目的节点!=&quot;网易&quot;#筛选目的节点是&quot;美团网&quot;或...">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#match-%E7%AD%9B%E9%80%89"><span class="toc-text">match 筛选</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#stats-%E7%BB%9F%E8%AE%A1"><span class="toc-text">stats 统计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rename"><span class="toc-text">rename</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bstats-%E5%8C%BA%E9%97%B4%E5%88%86%E5%9D%97%E7%BB%9F%E8%AE%A1"><span class="toc-text">bstats 区间分块统计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sort%E3%80%81skip%E3%80%81limit"><span class="toc-text">sort、skip、limit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#addfields"><span class="toc-text">addfields</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#join"><span class="toc-text">join</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#combine"><span class="toc-text">combine</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#expand-%E7%9F%A9%E9%98%B5%E5%B1%95%E5%BC%80"><span class="toc-text">expand  矩阵展开</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#unwind-%E6%95%B0%E7%BB%84%E5%B1%95%E5%BC%80"><span class="toc-text">unwind 数组展开</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#upsert-%E7%BB%9F%E8%AE%A1%E6%9B%B4%E6%96%B0"><span class="toc-text">upsert 统计更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">正则表达式</span></a></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/loglyst/">loglyst</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-05-31T22:32:00.000Z">2022-06-01</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>SPL命令</span></h1>
+<!--markdown-->
+<h2 id="match-筛选"><a href="#match-筛选" class="headerlink" title="match 筛选"></a>match 筛选</h2><p>类似sql的where</p>
+<figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line"><span class="meta">#筛选目的节点为<span class="string">&quot;网易&quot;</span>的数据</span></span><br><span class="line">match 目的节点=<span class="string">&quot;网易&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的节点不是<span class="string">&quot;网易&quot;</span>的数据</span></span><br><span class="line">match 目的节点!=<span class="string">&quot;网易&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的节点是<span class="string">&quot;美团网&quot;</span>或<span class="string">&quot;网易&quot;</span>的数据</span></span><br><span class="line">match 目的节点 <span class="keyword">in</span> (<span class="string">&quot;美团网&quot;</span>,<span class="string">&quot;网易&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的节点不是<span class="string">&quot;美团网&quot;</span>或<span class="string">&quot;网易&quot;</span>的数据</span></span><br><span class="line">match 目的节点 nin (<span class="string">&quot;美团网&quot;</span>,<span class="string">&quot;网易&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选连接时间大于1500的数据</span></span><br><span class="line">match 连接时间 &gt; <span class="number">1500</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的地址包含<span class="string">&quot;cn&quot;</span>的数据</span></span><br><span class="line">match 目的地址 regex <span class="string">&quot;cn&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的地址不包含<span class="string">&quot;cn&quot;</span>的数据</span></span><br><span class="line">match 目的地址 regex <span class="string">&quot;^((?!cn).)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的节点为<span class="string">&quot;网易&quot;</span>或<span class="string">&quot;美团网&quot;</span>的数据</span></span><br><span class="line">match 目的节点=<span class="string">&quot;网易&quot;</span> <span class="literal">or</span> 目的节点=<span class="string">&quot;美团网&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#筛选目的节点为<span class="string">&quot;网易&quot;</span>而且连接时间大于100的数据</span></span><br><span class="line">match 目的节点=<span class="string">&quot;网易&quot;</span> <span class="literal">and</span> 连接时间&gt;<span class="number">100</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="stats-统计"><a href="#stats-统计" class="headerlink" title="stats 统计"></a>stats 统计</h2><table>
+<thead>
+<tr>
+<th>函数名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count</td>
+<td>记录数，输出的字段名称为_count</td>
+</tr>
+<tr>
+<td>min</td>
+<td>最小值</td>
+</tr>
+<tr>
+<td>max</td>
+<td>最大值</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>平均值</td>
+</tr>
+<tr>
+<td>std</td>
+<td>标准差</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>求和</td>
+</tr>
+<tr>
+<td>first</td>
+<td>取第一个值</td>
+</tr>
+<tr>
+<td>last</td>
+<td>取最后一个</td>
+</tr>
+</tbody></table>
+<figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line"><span class="meta">#统计每个小时的请求数量、最大下载时间、最小下载时间、平均下载时间</span></span><br><span class="line">stats <span class="keyword">count</span>, max(下载时间) <span class="keyword">as</span> 最大下载时间, min(下载时间) <span class="keyword">as</span> 最小下载时间, <span class="keyword">avg</span>(下载时间) <span class="keyword">as</span> 平均下载时间 <span class="keyword">by</span> <span class="number">1</span>h</span><br><span class="line"></span><br><span class="line"><span class="meta">#统计每个目的节点的请求次数、总时间和连接时间的平均值</span></span><br><span class="line">stats <span class="keyword">count</span> <span class="keyword">as</span> 次数, <span class="keyword">avg</span>(总时间) <span class="keyword">as</span> 平均总时间,<span class="keyword">avg</span>(连接时间) <span class="keyword">as</span> 平均连接时间 <span class="keyword">by</span> 目的节点</span><br></pre></td></tr></table></figure>
+
+<h2 id="rename"><a href="#rename" class="headerlink" title="rename"></a>rename</h2><p>控制回显字段，只显示rename的字段。可进行二次计算</p>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line"><span class="comment">#仅显示目的节点和总时间</span></span><br><span class="line"><span class="built_in">rename</span> 目的节点,总时间</span><br><span class="line"></span><br><span class="line"><span class="comment">#计算平均总时间，并四舍五入保留小数点后两位</span></span><br><span class="line">stats <span class="built_in">avg</span>(总时间) <span class="keyword">as</span> 平均总时间 </span><br><span class="line">| <span class="built_in">rename</span> floor(平均总时间*<span class="number">100</span>+<span class="number">0.5</span>)/<span class="number">100</span> <span class="keyword">as</span> 平均总时间</span><br><span class="line"></span><br><span class="line"><span class="comment">#统计各目的节点的平均总访问时间，四舍五入保留小数点后两位</span></span><br><span class="line">stats <span class="built_in">avg</span>(总时间) <span class="keyword">as</span> 平均总时间 <span class="keyword">by</span> 目的节点</span><br><span class="line">| <span class="built_in">rename</span> 目的节点,floor(平均总时间*<span class="number">100</span>+<span class="number">0.5</span>)/<span class="number">100</span> <span class="keyword">as</span> 平均总时间</span><br></pre></td></tr></table></figure>
+
+<h2 id="bstats-区间分块统计"><a href="#bstats-区间分块统计" class="headerlink" title="bstats 区间分块统计"></a>bstats 区间分块统计</h2><figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line"><span class="meta">#分别统计总时间在[0,1000)、[1000,3000)、[3000,5000)区间的请求数量</span></span><br><span class="line">bstats <span class="keyword">count</span> <span class="keyword">as</span> 次数 <span class="keyword">by</span> 总时间 bounds(<span class="number">1000</span>,<span class="number">3000</span>,<span class="number">5000</span>) <span class="literal">default</span> <span class="string">&quot;other&quot;</span> </span><br></pre></td></tr></table></figure>
+
+<h2 id="sort、skip、limit"><a href="#sort、skip、limit" class="headerlink" title="sort、skip、limit"></a>sort、skip、limit</h2><figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">#跳过前10条数据</span><br><span class="line"><span class="keyword">skip </span>10</span><br><span class="line"></span><br><span class="line">#只显示10条数据</span><br><span class="line">limit 10</span><br><span class="line"></span><br><span class="line">#按总时间升序显示</span><br><span class="line">sort asc by 总时间</span><br><span class="line"></span><br><span class="line">#按总时间降序显示</span><br><span class="line">sort desc by 总时间</span><br></pre></td></tr></table></figure>
+
+<h2 id="addfields"><a href="#addfields" class="headerlink" title="addfields"></a>addfields</h2><p>新增显示字段，可进行二次计算</p>
+<p>与rename区别：rename过后只显示rename后面写出的字段。addfields是在原数据后面添加新字段显示，显示时会保留所有原字段</p>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">#添加显示一个新总时间字段</span></span><br><span class="line">addfields (总时间+连接时间) <span class="keyword">as</span> 新总时间</span><br></pre></td></tr></table></figure>
+
+<h2 id="join"><a href="#join" class="headerlink" title="join"></a>join</h2><p>用法：join “collection-id”  field1,field2…… by foreign&#x3D;local</p>
+<ul>
+<li>collection-id：被连接的数据集的名称，需要是以ID分区的数据集</li>
+<li>field1、field2：数据集collection-id中需要填充过来的字段名</li>
+<li>foreign&#x2F;local：两个数据集进行连接时的约束条件，满足约束条件的记录的相应字段会填充过来</li>
+</ul>
+<figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line">stats <span class="keyword">count</span> <span class="keyword">by</span> 监测点名称</span><br><span class="line">| rename 监测点名称 <span class="keyword">as</span> agentName,_count <span class="keyword">as</span> 记录数量</span><br><span class="line">| <span class="keyword">join</span> <span class="string">&quot;agentInfo&quot;</span> ID,地区,主机IP <span class="keyword">by</span> 监测点名称 = agentName</span><br></pre></td></tr></table></figure>
+
+<h2 id="combine"><a href="#combine" class="headerlink" title="combine"></a>combine</h2><figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line"><span class="comment">#基于目的节点统计各自的平均总时间、数量、数量占总数比例</span></span><br><span class="line">stats <span class="built_in">avg</span>(总时间) <span class="keyword">as</span> 平均总时间,count <span class="keyword">as</span> 数量 <span class="keyword">by</span> 目的节点</span><br><span class="line">| <span class="built_in">combine</span> <span class="string">&quot;网页测试&quot;</span> <span class="keyword">with</span> multi</span><br><span class="line">| stats count <span class="keyword">as</span> 总数</span><br><span class="line">| <span class="built_in">combine</span> *</span><br><span class="line">| <span class="built_in">rename</span> 目的节点, floor(平均总时间) <span class="keyword">as</span> 平均总时间, 数量, floor(数量/总数*<span class="number">100</span>+<span class="number">0.5</span>) <span class="keyword">as</span> 占比</span><br><span class="line"></span><br><span class="line"><span class="comment">#基于目的节点统计各自的平均总时间、平均连接时间、连接时间占比</span></span><br><span class="line">stats <span class="built_in">avg</span>(总时间) <span class="keyword">as</span> 平均总时间,count <span class="keyword">as</span> 数量 <span class="keyword">by</span> 目的节点</span><br><span class="line">| <span class="built_in">combine</span> <span class="string">&quot;网页测试&quot;</span> 平均连接时间 <span class="keyword">by</span> 目的节点</span><br><span class="line">| stats <span class="built_in">avg</span>(连接时间) <span class="keyword">as</span> 平均连接时间 <span class="keyword">by</span> 目的节点</span><br><span class="line">| <span class="built_in">combine</span> *</span><br><span class="line">| <span class="built_in">rename</span> 目的节点, 数量, floor(平均总时间) <span class="keyword">as</span> 平均总时间, floor(平均连接时间) <span class="keyword">as</span> 平均连接时间, floor(平均连接时间/平均总时间*<span class="number">100</span>) <span class="keyword">as</span> 连接时间占比</span><br></pre></td></tr></table></figure>
+
+<h2 id="expand-矩阵展开"><a href="#expand-矩阵展开" class="headerlink" title="expand  矩阵展开"></a>expand  矩阵展开</h2><ul>
+<li>单次命令，且只允许出现在最后阶段</li>
+<li>必须先进行计算</li>
+</ul>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line"><span class="comment">#制作源节点、目的节点基于平均连接时间的展开矩阵</span></span><br><span class="line">stats <span class="built_in">avg</span>(连接时间) <span class="keyword">as</span> 平均连接时间 <span class="keyword">by</span> 目的节点,源节点</span><br><span class="line">| <span class="built_in">rename</span> floor(平均连接时间*<span class="number">100</span>+<span class="number">0.5</span>)/<span class="number">100</span> <span class="keyword">as</span> 平均连接时间,目的节点,源节点</span><br><span class="line">| expand 源节点 <span class="keyword">by</span> 目的节点 <span class="keyword">with</span> 平均连接时间</span><br></pre></td></tr></table></figure>
+
+<h2 id="unwind-数组展开"><a href="#unwind-数组展开" class="headerlink" title="unwind 数组展开"></a>unwind 数组展开</h2><ul>
+<li>数组展开，指定数组字段，将一条记录展开成多条记录，数组中的每一个元素将被展开于原始记录中的所有字段组合形成多条记录</li>
+<li>格式：unwind 数组 数组索引变量</li>
+</ul>
+<figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">#展开统计所有归属地的平均总时间</span><br><span class="line">addfields <span class="built_in">split</span>(归属地,<span class="string">&quot; &quot;</span>) <span class="built_in">as</span> 归属地</span><br><span class="line">| <span class="type">unwind</span> 归属地 归属地索引</span><br><span class="line">| <span class="type">stats</span> avg(总时间) <span class="built_in">by</span> 归属地</span><br></pre></td></tr></table></figure>
+
+<h2 id="upsert-统计更新"><a href="#upsert-统计更新" class="headerlink" title="upsert 统计更新"></a>upsert 统计更新</h2><ul>
+<li>统计更新，指定从某一个数据集的入库数据提取对应的字段形成更新命令进行快照数据集存储</li>
+<li>不支持查询，仅支持在数据集扩展配置SPL中使用：混合器</li>
+<li>格式：upsert “collection-name” by key1 as name1, key2 as name2  commands ..</li>
+</ul>
+<h2 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h2><p>regex目前支持在match命令中使用，不支持表达式cond内使用</p>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">包含字符串xx:<span class="meta">field</span> regex <span class="string">&quot;xx&quot;</span></span><br><span class="line">不包含字符串xx:<span class="meta">field</span> regex <span class="string">&quot;^((?!xx).)*$&quot;</span></span><br><span class="line">以字符串xx开头:<span class="meta">field</span> regex <span class="string">&quot;^xx&quot;</span></span><br><span class="line">以字符串xx结束:<span class="meta">field</span> regex <span class="string">&quot;xx$&quot;</span></span><br><span class="line">不以字符串xx开头:<span class="meta">field</span> regex <span class="string">&quot;^(?!xx).*$&quot;</span></span><br><span class="line">不以字符串xx结束:<span class="meta">field</span> regex <span class="string">&quot;^((?!xx$).)*$&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/06/01/SPL%E5%91%BD%E4%BB%A4/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/06/01/SPL%E5%91%BD%E4%BB%A4/&title=SPL命令 - GO-LINUX&summary=
+match 筛选类似sql的where
+#筛选目的节点为&quot;网易&quot;的数据match 目的节点=&quot;网易&quot;#筛选目的节点不是&quot;网易&quot;的数据match 目的节点!=&quot;网易..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=SPL命令 - GO-LINUX&amp;body=https://go-linux.cn/2022/06/01/SPL%E5%91%BD%E4%BB%A4/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/06/01/SPL%E5%91%BD%E4%BB%A4/index.html"/></div></div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/05/23/%E5%B8%B8%E7%94%A8SQL%E8%AF%AD%E5%8F%A5%E5%A4%A7%E5%85%A8/">常用SQL语句大全<span class="note">较早</span></a><div class="line"></div><a id="prev" href="/2022/07/21/git/">git教程<span class="note">较新</span></a></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      快来参与讨论吧
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="Xianghs/blog-comments" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">博客</span><a href="/">近期</a><a href="/categories/">分类</a><a href="/archives/">归档</a></div><div class="sitemap-group"><span class="fs14">社交</span><a href="/friends/">友链</a><a href="/about/#comments">留言板</a><a href="/about/">关于本站</a></div></div><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://go-linux.cn/">@Xianghs</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0" title="v1.8.0">Stellar</a> 作为主题。</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">渝ICP备2022005868号-1</a></p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

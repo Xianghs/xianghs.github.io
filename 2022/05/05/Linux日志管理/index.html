@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>Linux日志管理 - GO-LINUX</title>
+
+  
+  <meta name="description" content="
+系统日志保存目录： &#x2F;var&#x2F;log
+[root@CentOS01 ~]# ls /var/loganaconda           firewalld           secureaudit              grubby_prune_debug  sec...">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%B8%B8%E7%94%A8%E7%9A%84%E6%97%A5%E5%BF%97"><span class="toc-text">系统常用的日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86%E6%9C%8D%E5%8A%A1-rsyslogd"><span class="toc-text">日志管理服务 rsyslogd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-text">案例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E6%97%A5%E5%BF%97%E8%BD%AE%E6%9B%BF"><span class="toc-text">Linux日志轮替</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E8%BD%AE%E6%9B%BF%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="toc-text">日志轮替配置参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%97%A5%E5%BF%97%E8%BD%AE%E6%9B%BF%E6%A1%88%E4%BE%8B"><span class="toc-text">自定义日志轮替案例</span></a></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/">日志管理</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-05-04T22:32:00.000Z">2022-05-05</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>Linux日志管理</span></h1>
+<!--markdown-->
+<p><strong>系统日志保存目录： &#x2F;var&#x2F;log</strong></p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">[root@CentOS01 ~]# <span class="keyword">ls</span> /<span class="keyword">var</span>/<span class="keyword">log</span></span><br><span class="line">anaconda           firewalld           secure</span><br><span class="line">audit              grubby_prune_debug  secure-20220428</span><br><span class="line"><span class="keyword">boot</span>.<span class="keyword">log</span>           iptraf-ng           spooler</span><br><span class="line"><span class="keyword">boot</span>.<span class="keyword">log</span>-20220428  lastlog             spooler-20220428</span><br><span class="line"><span class="keyword">boot</span>.<span class="keyword">log</span>-20220504  maillog             tallylog</span><br><span class="line">btmp               maillog-20220428    tomcat</span><br><span class="line">btmp-20220504      messages            tuned</span><br><span class="line">cron               messages-20220428   wtmp</span><br><span class="line">cron-20220428      mysqld.<span class="keyword">log</span>          yum.<span class="keyword">log</span></span><br><span class="line">dmesg              rhsm</span><br><span class="line">dmesg.old          <span class="keyword">sa</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="系统常用的日志"><a href="#系统常用的日志" class="headerlink" title="系统常用的日志"></a>系统常用的日志</h2><table>
+<thead>
+<tr>
+<th>日志文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>&#x2F;var&#x2F;log&#x2F;boot.log</strong></td>
+<td>系统启动日志</td>
+</tr>
+<tr>
+<td><strong>&#x2F;var&#x2F;log&#x2F;cron</strong></td>
+<td>定时任务日志</td>
+</tr>
+<tr>
+<td><strong>&#x2F;var&#x2F;log&#x2F;lastlog</strong></td>
+<td>记录系统中所有用户最后一次登录时间的日志。日志是二进制文件，需要用lastlog命令查看</td>
+</tr>
+<tr>
+<td><strong>&#x2F;var&#x2F;log&#x2F;mailog</strong></td>
+<td>邮件信息日志</td>
+</tr>
+<tr>
+<td><strong>&#x2F;var&#x2F;log&#x2F;message</strong></td>
+<td>记录系统重要消息的日志，会记录linux系统的绝大多数重要信息，系统出现问题着重检查该日志</td>
+</tr>
+<tr>
+<td><strong>&#x2F;var&#x2F;log&#x2F;secure</strong></td>
+<td>记录验证和授权方面的信息，只要涉及账户和密码的程序都会记录，比如系统登录、ssh登录、su切换用户、sudo授权，添加用户和修改密码也会记录</td>
+</tr>
+<tr>
+<td><strong>&#x2F;var&#x2F;tun&#x2F;ulmp</strong></td>
+<td>记录当前登录用户的信息，文件会随着用户的登录和注销而不断变化，只记录当前用户的信息，文件不能用vi查看，而要实用w，who，users等命令查看</td>
+</tr>
+<tr>
+<td>&#x2F;var&#x2F;log&#x2F;cups</td>
+<td>打印信息日志</td>
+</tr>
+<tr>
+<td>&#x2F;var&#x2F;log&#x2F;dmesg</td>
+<td>系统开机自检信息，可用dmesg命令查看</td>
+</tr>
+<tr>
+<td>&#x2F;var&#x2F;log&#x2F;btmp</td>
+<td>记录错误登录的日志，实用lastb命令查看</td>
+</tr>
+<tr>
+<td>&#x2F;var&#x2F;log&#x2F;wtmp</td>
+<td>记录用户的登录注销信息，记录系统的启动、关机、重启事件，使用last命令查看</td>
+</tr>
+</tbody></table>
+<h2 id="日志管理服务-rsyslogd"><a href="#日志管理服务-rsyslogd" class="headerlink" title="日志管理服务 rsyslogd"></a>日志管理服务 rsyslogd</h2><figure class="highlight tap"><table><tr><td class="code"><pre><span class="line"><span class="comment">#检查rsyslog服务是否开机自启动</span></span><br><span class="line">[root@CentOS01 log]<span class="comment"># systemctl list-unit-files | grep rsyslog</span></span><br><span class="line">rsyslog.service                               enabled </span><br><span class="line"><span class="comment">#</span></span><br><span class="line">[root@CentOS01 log]<span class="comment"># ps -ef | grep rsyslog</span></span><br><span class="line">root       <span class="number"> 995 </span>    <span class="number"> 1 </span><span class="number"> 0 </span>21:02 ?        00:00:00 /usr/sbin/rsyslogd -n</span><br><span class="line">root      <span class="number"> 1603 </span> <span class="number"> 1176 </span><span class="number"> 0 </span>21:58 pts/0    00:00:00 grep --color=auto rsyslog</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置文件位置：&#x2F;etc&#x2F;rsyslog.conf</strong></p>
+<p>编辑文件时的格式为：<code>*.*      存放的日志文件</code>   </p>
+<p>其中第一个<code>*</code>代表日志类型，第二个<code>*</code>代表日志级别</p>
+<table>
+<thead>
+<tr>
+<th>日志类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>auth</td>
+<td>pam产生的日志</td>
+</tr>
+<tr>
+<td>authpriv</td>
+<td>ssh、ftp等登录信息的验证信息</td>
+</tr>
+<tr>
+<td>corn</td>
+<td>时间任务相关</td>
+</tr>
+<tr>
+<td>kern</td>
+<td>内核</td>
+</tr>
+<tr>
+<td>lpr</td>
+<td>打印</td>
+</tr>
+<tr>
+<td>mail</td>
+<td>邮件</td>
+</tr>
+<tr>
+<td>mark(syslog)-rsyslog</td>
+<td>服务内部的信息，时间标识</td>
+</tr>
+<tr>
+<td>news</td>
+<td>新闻组</td>
+</tr>
+<tr>
+<td>user</td>
+<td>用户程序产生的相关信息</td>
+</tr>
+<tr>
+<td>uucp</td>
+<td>unix to unix copy主机之间的通信</td>
+</tr>
+<tr>
+<td>local 1-7</td>
+<td>自定义的日志设备</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>日志级别</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>debug</td>
+<td>有调试信息的，日志通信最多</td>
+</tr>
+<tr>
+<td>info</td>
+<td>一般信息日志，最常用</td>
+</tr>
+<tr>
+<td>notice</td>
+<td>最具有重要性的普通条件的信息</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>警告级别</td>
+</tr>
+<tr>
+<td>err</td>
+<td>错误级别，可导致某个功能或者模块不能正常工作的信息</td>
+</tr>
+<tr>
+<td>crit</td>
+<td>严重级别，可导致整个系统或软件不能正常运行的信息</td>
+</tr>
+<tr>
+<td>alert</td>
+<td>需要立刻修改的信息</td>
+</tr>
+<tr>
+<td>emerg</td>
+<td>内核崩溃等重要信息</td>
+</tr>
+<tr>
+<td>none</td>
+<td>什么都不记录</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>从上到下，级别越来越高，记录的信息越来越少</p>
+</blockquote>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">[root@CentOS01 <span class="keyword">log</span>]# vim /etc/rsyslog.conf</span><br><span class="line">#增加自定义日志，保存所有类型所有级别的日志到xhs.<span class="keyword">log</span></span><br><span class="line">*.*                                                /var/<span class="keyword">log</span>/xhs.<span class="keyword">log</span></span><br><span class="line"></span><br><span class="line">#重新登录系统后发现日志记录</span><br><span class="line">[root@CentOS01 <span class="keyword">log</span>]# cat xhs.<span class="keyword">log</span> | grep sshd</span><br><span class="line">May  <span class="number">5</span> <span class="number">22</span>:<span class="number">27</span>:<span class="number">04</span> CentOS01 sshd[<span class="number">993</span>]: <span class="keyword">Server</span> listening <span class="keyword">on</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span> port <span class="number">12222.</span></span><br><span class="line">May  <span class="number">5</span> <span class="number">22</span>:<span class="number">27</span>:<span class="number">04</span> CentOS01 sshd[<span class="number">993</span>]: <span class="keyword">Server</span> listening <span class="keyword">on</span> :: port <span class="number">12222.</span></span><br><span class="line">May  <span class="number">5</span> <span class="number">22</span>:<span class="number">27</span>:<span class="number">10</span> CentOS01 sshd[<span class="number">1231</span>]: Accepted <span class="keyword">password</span> <span class="keyword">for</span> root <span class="keyword">from</span> <span class="number">192.168</span><span class="number">.2</span><span class="number">.41</span> port <span class="number">52638</span> ssh2</span><br><span class="line">May  <span class="number">5</span> <span class="number">22</span>:<span class="number">27</span>:<span class="number">10</span> CentOS01 sshd[<span class="number">1231</span>]: pam_unix(sshd:<span class="keyword">session</span>): <span class="keyword">session</span> opened <span class="keyword">for</span> <span class="keyword">user</span> root <span class="keyword">by</span> (uid=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Linux日志轮替"><a href="#Linux日志轮替" class="headerlink" title="Linux日志轮替"></a>Linux日志轮替</h2><p><strong>配置文件：&#x2F;etc&#x2F;logrotate.conf</strong></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="comment"># rotate log files weekly 默认每周轮替一次</span></span><br><span class="line">weekly</span><br><span class="line"></span><br><span class="line"><span class="comment"># keep 4 weeks worth of backlogs  保存4个日志文件</span></span><br><span class="line">rotate <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># create new (empty) log files after rotating old ones  每周轮替时创建新的日志文件</span></span><br><span class="line">create</span><br><span class="line"></span><br><span class="line"><span class="comment"># use date as a suffix of the rotated file  使用日期作为轮替日志文件的后缀</span></span><br><span class="line">dateext</span><br><span class="line"></span><br><span class="line"><span class="comment"># uncomment this if you want your log files compressed 日志文件是否压缩，取消注释的话轮替时压缩老日志文件</span></span><br><span class="line"><span class="comment">#compress</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># RPM packages drop log rotation information into this directory  导入子配置文件</span></span><br><span class="line">include <span class="regexp">/etc/</span>logrotate.d</span><br><span class="line"></span><br><span class="line"><span class="comment"># no packages own wtmp and btmp -- we&#x27;ll rotate them here 单独设置某项日志的轮替规则，优先级高于默认规则</span></span><br><span class="line"><span class="regexp">/var/</span>log/wtmp &#123;</span><br><span class="line">    monthly</span><br><span class="line">    create <span class="number">0664</span> root utmp</span><br><span class="line">    minsize <span class="number">1</span>M</span><br><span class="line">    rotate <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="regexp">/var/</span>log/btmp &#123;</span><br><span class="line">    missingok</span><br><span class="line">    monthly</span><br><span class="line">    create <span class="number">0600</span> root utmp</span><br><span class="line">    rotate <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="日志轮替配置参数"><a href="#日志轮替配置参数" class="headerlink" title="日志轮替配置参数"></a>日志轮替配置参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>daily</td>
+<td>轮替周期为每天</td>
+</tr>
+<tr>
+<td>weekly</td>
+<td>轮替周期为每周</td>
+</tr>
+<tr>
+<td>monthly</td>
+<td>轮替周期为每月</td>
+</tr>
+<tr>
+<td>rotate  数字</td>
+<td>保留日志文件个数，0为不备份</td>
+</tr>
+<tr>
+<td>compress</td>
+<td>日志轮替时压缩旧日志</td>
+</tr>
+<tr>
+<td>create mode owner group</td>
+<td>建立新日志，同时指定新日志的权限与所有者和组</td>
+</tr>
+<tr>
+<td>mail address</td>
+<td>日志轮替时，通过邮件发送到指定邮件地址</td>
+</tr>
+<tr>
+<td>missingok</td>
+<td>如果日志不存在，则忽略该日志的警告信息</td>
+</tr>
+<tr>
+<td>notifempty</td>
+<td>如果日志为空文件，则不进行日志轮替</td>
+</tr>
+<tr>
+<td>minsize  大小</td>
+<td>日志轮替的最小值，日志达到这个值后才会进行轮替</td>
+</tr>
+<tr>
+<td>dateext</td>
+<td>使用日期作为轮替文件的后缀</td>
+</tr>
+<tr>
+<td>sharedscripts</td>
+<td>在此关键字之后的脚本只执行一次</td>
+</tr>
+<tr>
+<td>prerotate&#x2F;endscript</td>
+<td>在日志轮替之前执行脚本</td>
+</tr>
+<tr>
+<td>postrotate&#x2F;endscript</td>
+<td>在日志轮替之后执行脚本</td>
+</tr>
+</tbody></table>
+<h2 id="自定义日志轮替案例"><a href="#自定义日志轮替案例" class="headerlink" title="自定义日志轮替案例"></a>自定义日志轮替案例</h2><figure class="highlight autoit"><table><tr><td class="code"><pre><span class="line">[root<span class="symbol">@blog</span> logrotate.d]<span class="meta"># vim xhs</span></span><br><span class="line">/var/<span class="built_in">log</span>/xhs.<span class="built_in">log</span> &#123;</span><br><span class="line">    missingok</span><br><span class="line">    notifempty</span><br><span class="line">    daily</span><br><span class="line">    rotate <span class="number">7</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/05/05/Linux%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/05/05/Linux%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/&title=Linux日志管理 - GO-LINUX&summary=
+系统日志保存目录： &#x2F;var&#x2F;log
+[root@CentOS01 ~]# ls /var/loganaconda           firewalld           secureaudit       ..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=Linux日志管理 - GO-LINUX&amp;body=https://go-linux.cn/2022/05/05/Linux%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/05/05/Linux%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/index.html"/></div></div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/05/04/Linux%E5%AE%9A%E6%97%B6%E5%A4%87%E4%BB%BDMySQL%E6%95%B0%E6%8D%AE%E5%BA%93/">Linux定时备份MySQL数据库<span class="note">较早</span></a><div class="line"></div><a id="prev" href="/2022/05/05/%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E6%97%A5%E5%BF%97%20journalctl/">查看内存日志 journalctl<span class="note">较新</span></a></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      快来参与讨论吧
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="Xianghs/blog-comments" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">博客</span><a href="/">近期</a><a href="/categories/">分类</a><a href="/archives/">归档</a></div><div class="sitemap-group"><span class="fs14">社交</span><a href="/friends/">友链</a><a href="/about/#comments">留言板</a><a href="/about/">关于本站</a></div></div><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://go-linux.cn/">@Xianghs</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0" title="v1.8.0">Stellar</a> 作为主题。</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">渝ICP备2022005868号-1</a></p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

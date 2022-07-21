@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>GO-LINUX</title>
+
+  
+  <meta name="description" content="">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+  
+</head>
+
+<body>
+  
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout=''>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+
+<div class="widgets">
+<div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">欢迎，旅行者：</span></div><div class="widget-body fs14"><p>这是一个世界边缘的佛系小站，建于21世纪初，长期维护并保持低频更新。</p>
+</div></div>
+
+<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/05/10/CentOS%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2docker/">CentOS安装部署docker</a></div><div class="more-item"><a class="title" href="/2022/05/10/docker%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD/">docker目录挂载</a></div><div class="more-item"><a class="title" href="/2022/05/04/Linux%E5%AE%9A%E6%97%B6%E5%A4%87%E4%BB%BDMySQL%E6%95%B0%E6%8D%AE%E5%BA%93/">Linux定时备份MySQL数据库</a></div><div class="more-item"><a class="title" href="/2022/05/10/%E5%B8%B8%E7%94%A8docker%E5%91%BD%E4%BB%A4/">常用docker命令</a></div><div class="more-item"><a class="title" href="/2022/07/21/git/">git教程</a></div></div></div>
+</div>
+
+
+    </aside>
+    <div class='l_main list'>
+      
+  
+
+<header class="header mobile-only">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+</header>
+
+
+
+      
+
+
+  <div class='nav-wrap'>
+  <nav class='sub post cap'>
+    
+      <a class='active' href='/'>近期发布</a>
+    
+    
+      
+        <a href='/categories'>分类</a>
+      
+    
+    
+    
+      
+        <a href='/archives'>归档</a>
+      
+    
+  </nav>
+</div>
+
+  <div class="post-list post"><a class="post-card post " href="/2022/05/11/k8s%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96/">
+<article class="md"><h2 class="post-title">k8s数据持久化</h2><div class="excerpt"><p>
+介绍kubernetes 集群不会为你处理数据的存储，重启之后数据丢失，我们可以为数据库挂载一个磁盘来确保数据的安全。你可以选择云存储、本地磁盘、NFS。
+
+本地磁盘：可以挂载某个节点上的目录，但是这需要限定 pod 在这个节点上运行
+云存储：不限定节点，不受集群影响，安全稳定；需要云服务商提供，裸机集群是没有的。
+NFS：不限定节点，不受集群影响
+
+本地磁盘挂载示例把节点上的一个目录挂载...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-10T22:13:11.000Z">2022-05-11</time></span><span class="cap breadcrumb">k8s</span></div></article>
+</a><a class="post-card post " href="/2022/05/11/K8s%E7%9A%84StatefulSet/">
+<article class="md"><h2 class="post-title">K8s的StatefulSet</h2><div class="excerpt"><p>
+简介StatefulSet 是用来管理有状态的应用，例如数据库，只能请求一个pod，其他pod可做主从集群。前面我们部署的应用，都是不需要存储数据，不需要记住状态的，可以随意扩充副本，每个副本都是一样的，可替代的。而像数据库、Redis 这类有状态的，则不能随意扩充副本。StatefulSet 会固定每个 Pod 的名字
+部署 StatefulSet 类型的 MongodbapiVersi...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-10T21:41:34.000Z">2022-05-11</time></span><span class="cap breadcrumb">k8s</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/k8s%E7%9A%84service/">
+<article class="md"><h2 class="post-title">k8s的service</h2><div class="excerpt"><p>
+特性
+Service 通过 label 关联对应的 Pod
+Servcie 生命周期不跟 Pod 绑定，不会因为 Pod 重创改变 IP
+提供了负载均衡功能，自动转发流量到不同 Pod
+可对集群外部提供访问端口
+集群内部可通过服务名字访问
+
+创建service创建 一个 Service，通过标签test-k8s跟对应的 Pod 关联上service.yaml
+apiVersion: v1k...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-10T05:32:33.000Z">2022-05-10</time></span><span class="cap breadcrumb">k8s</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/%E9%83%A8%E7%BD%B2%E5%BA%94%E7%94%A8%E5%88%B0k8s%E9%9B%86%E7%BE%A4%EF%BC%8C%E5%B9%B6%E8%BF%9B%E8%A1%8C%E5%9F%BA%E6%9C%AC%E7%AE%A1%E7%90%86/">
+<article class="md"><h2 class="post-title">部署应用到k8s集群，并进行基本管理</h2><div class="excerpt"><p>
+直接运行命令部署podkubectl run testapp --image=ccr.ccs.tencentyun.com/k8s-tutorial/test-k8s:v1
+
+使用yaml文件进行pod部署#创建yaml文件app.yamlapiVersion: v1kind: Podmetadata:  name: test-podspec:  # 定义容器，可以多个  containe...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-10T04:48:00.000Z">2022-05-10</time></span><span class="cap breadcrumb">k8s</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/docker%20%E5%A4%9A%E5%AE%B9%E5%99%A8%E9%80%9A%E4%BF%A1/">
+<article class="md"><h2 class="post-title">docker 多容器通信</h2><div class="excerpt"><p>
+创建虚拟网络要想多容器之间互通，从 Web 容器访问 Redis 容器，我们只需要把他们放到同个网络中就可以了。
+1.创建一个名为test-net的网络docker network create test-net
+
+2.运行 Redis 在 test-net 网络中，别名redisdocker run -d --name redis --network test-net --network...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-09T22:51:32.000Z">2022-05-10</time></span><span class="cap breadcrumb">docker</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/docker%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD/">
+<article class="md"><h2 class="post-title">docker目录挂载</h2><div class="excerpt"><p>
+bind mount直接把宿主机目录映射到容器内，适合挂代码目录和配置文件。可挂到多个容器上
+docker run -p 9090:8080 --name test-hello -v /opt/docker/test-docker-main:/app -d test:v1
+
+
+
+volume由容器创建和管理，创建在宿主机，所以删除容器不会丢失，官方推荐，更高效，Linux 文件系统，适合存...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-09T22:41:33.000Z">2022-05-10</time></span><span class="cap breadcrumb">docker</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/%E5%B8%B8%E7%94%A8docker%E5%91%BD%E4%BB%A4/">
+<article class="md"><h2 class="post-title">常用docker命令</h2><div class="excerpt"><p>
+一、镜像指令1.列出本地镜像docker images
+
+2.查找镜像docker search tomcat #从Docker Hub上查找tomcat镜像
+
+3.下载镜像
+如果需要确认是否有需要下载的版本，可以在https://hub.docker.com/上查找
+
+docker pull tomcat      #从Docker Hub上下载tomcat镜像，默认是最新版本。等价于：...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-09T22:17:00.000Z">2022-05-10</time></span><span class="cap breadcrumb">docker</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/dockerfile%E6%9E%84%E5%BB%BAdocker%E9%95%9C%E5%83%8F/">
+<article class="md"><h2 class="post-title">dockerfile构建docker镜像</h2><div class="excerpt"><p>
+为自己的 Web 项目构建镜像示例项目代码：https://github.com/gzyunke/test-docker这是一个 Nodejs + Koa2 写的 Web 项目，提供了简单的两个演示页面。软件依赖：nodejs项目依赖库：koa、log4js、koa-router
+编写dockerfileFROM node:11MAINTAINER easydoc.net# 复制代码ADD...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-09T21:59:49.000Z">2022-05-10</time></span><span class="cap breadcrumb">docker</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/docker-compose%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2wordpress%E6%A1%88%E4%BE%8B/">
+<article class="md"><h2 class="post-title">docker-compose一键部署wordpress案例</h2><div class="excerpt"><p>
+1.安装docker和docker-compose见链接https://go-linux.cn/index.php/Linux/78.html
+
+2.编写docker-compose.yml文件version: &#x27;3.1&#x27;services:  wordpress:    image: wordpress    restart: always    ports:     ...</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-09T21:35:00.000Z">2022-05-10</time></span><span class="cap breadcrumb">docker</span></div></article>
+</a><a class="post-card post " href="/2022/05/10/CentOS%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2docker/">
+<article class="md"><h2 class="post-title">CentOS安装部署docker</h2><div class="excerpt"><p>
+1.安装需要的软件包， yum-util 提供yum-config-manager功能，另外两个是devicemapper驱动依赖的yum install -y yum-utils device-mapper-persistent-data lvm2
+
+2.添加docker的yum源yum-config-manager --add-repo https://download.docker....</p></div><div class="meta cap"><span class="cap" id="post-meta">发布于&nbsp;<time datetime="2022-05-09T21:22:00.000Z">2022-05-10</time></span><span class="cap breadcrumb">docker</span></div></article>
+</a></div>
+  
+  <div class='paginator-wrap dis-select'>
+    <a class='paginator prev' href='/'>
+      <img src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/arrow/f049bbd4e88ec.svg'/>
+    </a>
+    <div class='paginator current'>
+      2<span class='sep'></span>6
+    </div>
+    <a class='paginator next' href='/page/3/'>
+      <img src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/arrow/064b95430caf4.svg'/>
+    </a>
+  </div>
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">博客</span><a href="/">近期</a><a href="/categories/">分类</a><a href="/archives/">归档</a></div><div class="sitemap-group"><span class="fs14">社交</span><a href="/friends/">友链</a><a href="/about/#comments">留言板</a><a href="/about/">关于本站</a></div></div><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://go-linux.cn/">@Xianghs</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0" title="v1.8.0">Stellar</a> 作为主题。</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">渝ICP备2022005868号-1</a></p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

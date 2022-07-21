@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 6.2.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
+  <link rel="preconnect" href="https://fastly.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  <title>CentOS7.9安装部署zabbix5.0 - GO-LINUX</title>
+
+  
+  <meta name="description" content="
+简介zabbix是一个基于[WEB]界面的提供分布式[系统监视]以及网络监视功能的企业级的开源解决方案。zabbix能监视各种网络参数，保证[服务器系统]的安全运营；并提供灵活的通知机制以让[系统管理员]快速定位/解决存在的各种问题。zabbix由2部分构成，zabbix server与可选...">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    
+      <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+
+<header class="header">
+
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+
+<div class="widgets">
+
+<div class="widget-wrap single" id="toc"><div class="widget-header cap dis-select"><span class="name">本文目录</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="toc-text">安装配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">web初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zabbix-agent%E5%AE%89%E8%A3%85"><span class="toc-text">zabbix-agent安装</span></a></li></ol></div></div></div>
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E7%9B%91%E6%8E%A7/">监控</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-05-05T04:50:00.000Z">2022-05-05</time></div></div>
+
+<article class='content md post'>
+<h1 class="article-title"><span>CentOS7.9安装部署zabbix5.0</span></h1>
+<!--markdown-->
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">zabbix是一个基于<span class="selector-attr">[WEB]</span>界面的提供分布式<span class="selector-attr">[系统监视]</span>以及网络监视功能的企业级的开源解决方案。</span><br><span class="line"></span><br><span class="line">zabbix能监视各种网络参数，保证<span class="selector-attr">[服务器系统]</span>的安全运营；并提供灵活的通知机制以让<span class="selector-attr">[系统管理员]</span>快速定位/解决存在的各种问题。</span><br><span class="line"></span><br><span class="line">zabbix由<span class="number">2</span>部分构成，zabbix server与可选组件zabbix agent。</span><br><span class="line"></span><br><span class="line"><span class="number">1</span>. zabbix server可以通过<span class="selector-attr">[SNMP]</span>，zabbix agent，<span class="selector-attr">[ping]</span>，端口监视等方法提供对远程服务器/网络状态的监视，<span class="selector-attr">[数据收集]</span>等功能。</span><br><span class="line"></span><br><span class="line"><span class="number">2</span><span class="selector-class">.zabbix</span> agent 一个部署在监控对象上的，能够主动监控本地资源和应用的程序；一般来讲，我们需要在所有被监控服务器上安装此程序。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><p><strong>1.关闭防火墙和selinux</strong></p>
+<figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="params">system</span>ctl stop firewalld</span><br><span class="line"></span><br><span class="line"><span class="params">system</span>ctl disable firewalld</span><br><span class="line"></span><br><span class="line">setenforce <span class="number">0</span> <span class="comment"># 设置临时关闭selinux</span></span><br><span class="line"></span><br><span class="line">sed -i <span class="string">&#x27;s/SELINUX=enforcing/SELINUX=disabled/&#x27;</span> /etc/selinux/config <span class="comment">#设置永久关闭selinux</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">reboot</span> <span class="comment">#重启</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>2.安装 zabbix rpm 源,鉴于国内网络情况，使用阿里云 zabbix 源</strong></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">rpm -Uvh https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/zabbix/</span>zabbix<span class="regexp">/5.0/</span>rhel<span class="regexp">/7/</span>x86_64/zabbix-release-<span class="number">5.0</span>-<span class="number">1</span>.el7.noarch.rpm</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">&#x27;s#http://repo.zabbix.com#https://mirrors.aliyun.com/zabbix#&#x27;</span> <span class="regexp">/etc/yum</span>.repos.d/zabbix.repo</span><br><span class="line"></span><br><span class="line">yum clean all</span><br></pre></td></tr></table></figure>
+
+<p><strong>3.安装 zabbix server 和 agent</strong></p>
+<figure class="highlight axapta"><table><tr><td class="code"><pre><span class="line">yum install zabbix-<span class="keyword">server</span>-mysql zabbix-agent -y</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.安装 Software Collections，便于后续安装高版本的 php</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">yum <span class="keyword">install </span>centos-release-<span class="keyword">scl </span>-y</span><br></pre></td></tr></table></figure>
+
+<p><strong>5.启用 zabbix 前端源，修改vi &#x2F;etc&#x2F;yum.repos.d&#x2F;zabbix.repo，将[zabbix-frontend]下的 enabled 改为 1</strong></p>
+<figure class="highlight abnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">enabled</span><span class="operator">=</span><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>6.安装 zabbix 前端和相关环境</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">yum <span class="keyword">install </span>zabbix-web-mysql-<span class="keyword">scl </span>zabbix-apache-conf-<span class="keyword">scl </span>-y</span><br></pre></td></tr></table></figure>
+
+<p><strong>7.安装mariadb数据库，并设置开机自启动</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">yum install mariadb-<span class="keyword">server</span> -y</span><br><span class="line">systemctl <span class="keyword">enable</span> <span class="comment">--now mariadb</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>8.使用以下命令初始化 mariadb 并配置 root 密码</strong></p>
+<figure class="highlight ebnf"><table><tr><td class="code"><pre><span class="line"><span class="attribute">mysql_secure_installation</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>9.使用 root 用户进入 mysql，并建立 zabbix 数据库，注意数据库编码</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">[root@CentOS02 ~]# mysql -uroot -p</span><br><span class="line">#创建数据库</span><br><span class="line">MariaDB [(<span class="keyword">none</span>)]&gt; <span class="keyword">create</span> <span class="keyword">database</span> zabbix <span class="type">character</span> <span class="keyword">set</span> utf8 <span class="keyword">collate</span> utf8_bin;</span><br><span class="line">#创建账号</span><br><span class="line">MariaDB [(<span class="keyword">none</span>)]&gt; <span class="keyword">create</span> <span class="keyword">user</span> zabbix@localhost identified <span class="keyword">by</span> <span class="string">&#x27;设置的密码&#x27;</span>;</span><br><span class="line">#账号授权</span><br><span class="line">MariaDB [(<span class="keyword">none</span>)]&gt; <span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> zabbix.* <span class="keyword">to</span> zabbix@localhost;</span><br><span class="line">#赋予zabbix用户远程登录数据库权限，谨慎开启</span><br><span class="line">MariaDB [(<span class="keyword">none</span>)]&gt; <span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> *.* <span class="keyword">to</span> zabbix@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;设置的密码&#x27;</span>;</span><br><span class="line">#使配置生效</span><br><span class="line">MariaDB [(<span class="keyword">none</span>)]&gt; flush <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>10.导入 zabbix 数据库，zabbix 数据库用户为 zabbix，密码为zabbix账号的密码</strong></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">zcat <span class="regexp">/usr/</span>share<span class="regexp">/doc/</span>zabbix-server-mysql*/create.sql.gz | mysql -uzabbix -p zabbix</span><br></pre></td></tr></table></figure>
+
+<p><strong>11.修改 zabbix server 配置文件zabbix_server.conf 里的数据库密码</strong></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">vim <span class="regexp">/etc/</span>zabbix/zabbix_server.conf</span><br><span class="line">找到 DBPassword=password ，将数据库密码改为zabbix数据库的密码，保存退出。</span><br></pre></td></tr></table></figure>
+
+<p><strong>12.修改 zabbix 的 php 配置文件，vim &#x2F;etc&#x2F;opt&#x2F;rh&#x2F;rh-php72&#x2F;php-fpm.d&#x2F;zabbix.conf 里的时区，改成 Asia&#x2F;Shanghai</strong></p>
+<figure class="highlight abnf"><table><tr><td class="code"><pre><span class="line">php_value[date.timezone] <span class="operator">=</span> Asia/Shanghai</span><br></pre></td></tr></table></figure>
+
+<p><strong>13.启动相关服务，并配置开机自动启动</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">systemctl <span class="keyword">restart</span> zabbix-<span class="keyword">server</span> zabbix-agent httpd rh-php72-php-fpm</span><br><span class="line">systemctl <span class="keyword">enable</span> zabbix-<span class="keyword">server</span> zabbix-agent httpd rh-php72-php-fpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="web初始化"><a href="#web初始化" class="headerlink" title="web初始化"></a>web初始化</h2><p><strong>1.使用浏览器访问<a target="_blank" rel="noopener" href="http://ip/zabbix">http://ip/zabbix</a> 即可访问 zabbix 的 web 页面</strong></p>
+<p><strong>2.配置完成进入登录界面， 用户名：Admin，密码：zabbix</strong></p>
+<h2 id="zabbix-agent安装"><a href="#zabbix-agent安装" class="headerlink" title="zabbix-agent安装"></a>zabbix-agent安装</h2><p><strong>1.安装zabbix仓库</strong></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">rpm -Uvh https:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/zabbix/</span>zabbix<span class="regexp">/5.0/</span>rhel<span class="regexp">/7/</span>x86_64/zabbix-release-<span class="number">5.0</span>-<span class="number">1</span>.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.安装zabbix-agent</strong></p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">yum <span class="keyword">install</span> zabbix-agent  -y</span><br></pre></td></tr></table></figure>
+
+<p><strong>3.修改配置文件</strong></p>
+<figure class="highlight abnf"><table><tr><td class="code"><pre><span class="line">vim /etc/zabbix/zabbix_agentd.conf</span><br><span class="line"><span class="attribute">Server</span><span class="operator">=</span>zabbix服务器IP </span><br><span class="line"><span class="attribute">ServerActive</span><span class="operator">=</span>zabbix服务器IP </span><br><span class="line"><span class="attribute">Hostname</span><span class="operator">=</span>本机计算机名</span><br></pre></td></tr></table></figure>
+
+<p><strong>4.启动zabbix-agent并设置自启动</strong></p>
+<figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="params">system</span>ctl start zabbix-agent</span><br><span class="line"><span class="params">system</span>ctl enable zabbix-agent</span><br></pre></td></tr></table></figure>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/05/05/CentOS7.9%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2zabbix5.0/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/05/05/CentOS7.9%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2zabbix5.0/&title=CentOS7.9安装部署zabbix5.0 - GO-LINUX&summary=
+简介zabbix是一个基于[WEB]界面的提供分布式[系统监视]以及网络监视功能的企业级的开源解决方案。zabbix能监视各种网络参数，保证[服务器系统]的安全运营；并提供灵活的通知机制以让[系统管理员]快速定位/解决存在的各种问题..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=CentOS7.9安装部署zabbix5.0 - GO-LINUX&amp;body=https://go-linux.cn/2022/05/05/CentOS7.9%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2zabbix5.0/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/05/05/CentOS7.9%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2zabbix5.0/index.html"/></div></div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/05/05/Linux%20%E5%88%86%E5%89%B2%E3%80%81%E6%8E%92%E5%BA%8F%E3%80%81%E7%BB%9F%E8%AE%A1%E6%8C%87%E4%BB%A4%E5%AE%9E%E8%B7%B5/">Linux 分割、排序、统计指令实践<span class="note">较早</span></a><div class="line"></div><a id="prev" href="/2022/05/10/CentOS%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2docker/">CentOS安装部署docker<span class="note">较新</span></a></section></div>
+
+
+
+
+
+
+  <div class='related-wrap md reveal' id="comments">
+    <div class='cmt-title cap theme'>
+      快来参与讨论吧
+    </div>
+    <div class='cmt-body beaudar'>
+      
+
+<svg class="loading" style="vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="beaudar" repo="Xianghs/blog-comments" issue-term="pathname" theme="preferred-color-scheme" input-position="top" comment-order="desc" loading="false" branch="main"></div>
+
+    </div>
+  </div>
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="sitemap"><div class="sitemap-group"><span class="fs14">博客</span><a href="/">近期</a><a href="/categories/">分类</a><a href="/archives/">归档</a></div><div class="sitemap-group"><span class="fs14">社交</span><a href="/friends/">友链</a><a href="/about/#comments">留言板</a><a href="/about/">关于本站</a></div></div><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+<p>本站由 <a href="https://go-linux.cn/">@Xianghs</a> 创建，使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0" title="v1.8.0">Stellar</a> 作为主题。</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">渝ICP备2022005868号-1</a></p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.8.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js',
+    sitesjs: '/js/plugins/sites.js',
+    friendsjs: '/js/plugins/friends.js',
+  };
+
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@6/swiper-bundle.min.css","js":"https://unpkg.com/swiper@6/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://fastly.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://fastly.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://fastly.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://fastly.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti/umd/heti.min.css","js":"https://unpkg.com/heti/umd/heti-addon.min.js"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+  <script>
+  function loadBeaudar() {
+    const els = document.querySelectorAll("#comments #beaudar");
+    if (els.length === 0) return;
+    els.forEach((el, i) => {
+      try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.log(error);
+      }
+      var script = document.createElement('script');
+      script.src = 'https://beaudar.lipk.org/client.js';
+      script.async = true;
+      for (let key of Object.keys(el.attributes)) {
+        let attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+    });
+  }
+  window.addEventListener('DOMContentLoaded', (event) => {
+      loadBeaudar();
+  });
+</script>
+
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
