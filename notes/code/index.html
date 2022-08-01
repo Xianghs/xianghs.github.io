@@ -4,7 +4,7 @@
 <head>
   <meta name="generator" content="Hexo 6.2.0">
   <meta charset="utf-8">
-  
+  <meta name="robots" content="noindex,nofollow">
 
   <meta http-equiv='x-dns-prefetch-control' content='on' />
   <link rel='dns-prefetch' href='https://fastly.jsdelivr.net'>
@@ -18,12 +18,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
-  <title>GO-LINUX</title>
+  <title>Notes：常用命令备忘 - GO-LINUX</title>
 
   
-  <meta name="description" content="123test
-
-">
+  <meta name="description" content="Linux常用指令备忘防火墙iptables&firewall">
 
   <!-- feed -->
   
@@ -37,13 +35,16 @@
   
 
   
-
-  
-
-
-  
     
       <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+      <link rel="icon" href="https://store.go-linux.cn/blog/favicon.ico">
+    
+      <link rel="preconnect" href="https://s1.hdslb.com/" />
+    
+      <link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" media="all" onload="this.media='all'" />
+    
+      <link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/medium.css" media="all" onload="this.media='all'" />
     
   
 </head>
@@ -52,54 +53,47 @@
   
 
 
+
+
   <div class='l_body' id='start'>
-    <aside class='l_left' layout='page'>
+    <aside class='l_left' layout='wiki'>
     
 
 
 <header class="header">
 
-<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
-<nav class="menu dis-select"><a class="nav-item" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/logo.png" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item" href="/">文章</a><a class="nav-item active" href="/notes/">便签</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a></nav></header>
 
 <div class="widgets">
-<div class="widget-wrap" id="markdown"><div class="widget-header cap dis-select"><span class="name">欢迎，旅行者：</span></div><div class="widget-body fs14"><p>这是一个世界边缘的佛系小站，建于21世纪初，长期维护并保持低频更新。</p>
-</div></div>
 
-
-
-<div class="widget-wrap" id="recent"><div class="widget-header cap dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><div class="more-item"><a class="title" href="/2022/05/10/CentOS%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2docker/">CentOS安装部署docker</a></div><div class="more-item"><a class="title" href="/2022/05/10/docker%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD/">docker目录挂载</a></div><div class="more-item"><a class="title" href="/2022/05/04/Linux%E5%AE%9A%E6%97%B6%E5%A4%87%E4%BB%BDMySQL%E6%95%B0%E6%8D%AE%E5%BA%93/">Linux定时备份MySQL数据库</a></div><div class="more-item"><a class="title" href="/2022/05/10/%E5%B8%B8%E7%94%A8docker%E5%91%BD%E4%BB%A4/">常用docker命令</a></div><div class="more-item"><a class="title" href="/2022/07/21/git/">git教程</a></div></div></div>
-
+<div class="widget-wrap multi" id="toc"><div class="widget-header cap dis-select"><span class="name">✍️随手记</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/notes/code/index.html"><span class="toc-text">常用命令备忘</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4%E5%A4%87%E5%BF%98"><span class="toc-text">Linux常用指令备忘</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git"><span class="toc-text">git</span></a></li></ol></div></div><div class="widget-header cap dis-select"><span class="name">🌞博客相关</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/notes/write/index.html"><span class="toc-text">写作标签</span></a></div></div><div class="widget-header cap dis-select"><span class="name">🔥在线工具</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/notes/json/index.html"><span class="toc-text">Json在线解析工具</span></a></div></div></div>
 </div>
 
 
     </aside>
     <div class='l_main'>
       
-  
-
-<header class="header mobile-only">
-
-<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
-</header>
-
-
 
       
 
   
-
-
-  <article class='content md page'>
   
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/notes/">便签</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/notes/index.html">便笺</a></div><div id="post-meta">更新于&nbsp;<time datetime="2022-07-29T03:40:47.749Z">2022-07-29</time></div></div>
+
+  <article class='content md wiki'>
   
-    <figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="number">123</span><span class="keyword">test</span></span><br></pre></td></tr></table></figure>
+  <h2 id="Linux常用指令备忘"><a href="#Linux常用指令备忘" class="headerlink" title="Linux常用指令备忘"></a>Linux常用指令备忘</h2><details class="tag-plugin folding" ><summary><span>防火墙iptables&firewall</span></summary><div class="body"><div class="tag-plugin tabs" align="center"id="tab_8""><ul class="nav-tabs"><li class="tab"><a href="#tab_8-1">放行指定IP</a></li><li class="tab active"><a href="#tab_8-2">放行指定端口</a></li><li class="tab"><a href="#tab_8-3">关闭指定端口和IP</a></li></ul><div class="tab-content"><div class="tab-pane" id="tab_8-1"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#firewall</span></span><br><span class="line">firewall-cmd --permanent --add-rich-rule=<span class="string">&quot;rule family=&quot;</span>ipv4<span class="string">&quot; source address=&quot;</span>172.16.110.55/24<span class="string">&quot;   accept&quot;</span></span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment">#iptables</span></span><br><span class="line">iptables -I INPUT -s 192.168.1.0/24 -p tcp -j ACCEPT</span><br><span class="line">service iptables save</span><br><span class="line"></span><br></pre></td></tr></table></figure></div><div class="tab-pane active" id="tab_8-2"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#firewall</span></span><br><span class="line">firewall-cmd --add-port=443/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment">#iptables</span></span><br><span class="line">iptables -I INPUT  -p tcp –dport 80 -j ACCEPT</span><br><span class="line">service iptables save</span><br></pre></td></tr></table></figure></div><div class="tab-pane" id="tab_8-3"><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#firewall</span></span><br><span class="line">firewall-cmd --permanent --add-rich-rule=<span class="string">&#x27;rule family=ipv4 source address=&quot;111.225.0.0/16&quot; drop&#x27;</span></span><br><span class="line">firewall-cmd --permanent --remove-port=3389/tcp</span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment">#iptables</span></span><br><span class="line">iptables -I INPUT -s 10.0.28.15/24 -j DROP</span><br><span class="line">iptables -I INPUT  -ptcp --dport 22 -j DROP</span><br><span class="line">service iptables save</span><br></pre></td></tr></table></figure></div></div></div></div></details>
+
+<h2 id="git"><a href="#git" class="headerlink" title="git"></a>git</h2><details class="tag-plugin folding" ><summary><span>git命令速查表</span></summary><div class="body"><div class="tag-plugin image"><div class="image-bg" style="background:white;padding:16px;"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://store.go-linux.cn/blog/up-6ed26b78fc2aaa58fdc76bae83490895e59.webp" fancybox="true"/></div></div></div></details>
+  
 
 
-  
   </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/notes/write/index.html">写作标签<span class="note">下一篇</span></a><div class="line"></div><a id="prev" href="/notes/index.html">便签<span class="note">上一篇</span></a></section></div>
 
-
+  
 
   <div class='related-wrap md reveal' id="comments">
     <div class='cmt-title cap theme'>
@@ -114,6 +108,7 @@
 
     </div>
   </div>
+
 
 
 

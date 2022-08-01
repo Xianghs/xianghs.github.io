@@ -21,10 +21,11 @@
   <title>git教程 - GO-LINUX</title>
 
   
-  <meta name="description" content="介绍什么是 Git ？Git 是目前世界上最先进的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。
+  <meta name="description" content="
+介绍什么是 Git ？Git 是目前世界上最先进的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。
 Git 与 SVN 区别点
 Git 是分布式的，SVN 不是。这是 Git 和其它非分布式的版本控制系统如 SVN，CVS 等最核心的区别。
-Git 把内容按元数据方式存储，而 SVN...">
+Git 把内容按元数据方式存储，而 SV...">
 
   <!-- feed -->
   
@@ -38,13 +39,16 @@ Git 把内容按元数据方式存储，而 SVN...">
   
 
   
-
-  
-
-
-  
     
       <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/highlightjs/cdn-release@11.5.0/build/styles/atom-one-dark.min.css">
+    
+      <link rel="icon" href="https://store.go-linux.cn/blog/favicon.ico">
+    
+      <link rel="preconnect" href="https://s1.hdslb.com/" />
+    
+      <link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" media="all" onload="this.media='all'" />
+    
+      <link rel="stylesheet" href="//s1.hdslb.com/bfs/static/jinkela/long/font/medium.css" media="all" onload="this.media='all'" />
     
   
 </head>
@@ -62,8 +66,8 @@ Git 把内容按元数据方式存储，而 SVN...">
 
 <header class="header">
 
-<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/a686c9177f3e67096b097ed336c79f3df8dc5594-bkimg-process,v_1,rw_1,rh_1,maxl_800,pad_1" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
-<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a><a class="nav-item" href="/notes/">便签</a></nav></header>
+<div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.2/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://store.go-linux.cn/blog/logo.png" onerror="javascript:this.classList.add('error');this.src='https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/image/2659360.svg';"></a><a class="title" href="/"><div class="main">GO-LINUX</div><div class="sub cap">运维的自我修养</div></a></div>
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/notes/">便签</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a></nav></header>
 
 <div class="widgets">
 
@@ -79,11 +83,11 @@ Git 把内容按元数据方式存储，而 SVN...">
 
       
 
-
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-07-21T12:39:37.391Z">2022-07-21</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div><div id="post-meta">发布于&nbsp;<time datetime="2022-07-26T09:00:53.642Z">2022-07-26</time></div></div>
 
 <article class='content md post'>
 <h1 class="article-title"><span>git教程</span></h1>
+<span id="more"></span>
 <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h2 id="什么是-Git-？"><a href="#什么是-Git-？" class="headerlink" title="什么是 Git ？"></a>什么是 Git ？</h2><p>Git 是目前世界上最先进的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。</p>
 <h3 id="Git-与-SVN-区别点"><a href="#Git-与-SVN-区别点" class="headerlink" title="Git 与 SVN 区别点"></a>Git 与 SVN 区别点</h3><ol>
 <li>Git 是分布式的，SVN 不是。这是 Git 和其它非分布式的版本控制系统如 SVN，CVS 等最核心的区别。</li>
@@ -92,7 +96,7 @@ Git 把内容按元数据方式存储，而 SVN...">
 <li>Git 没有一个全局的版本号，而 SVN 有。目前为止这是跟 SVN 相比 Git 缺少的最大的一个特征。</li>
 <li>Git 的内容完整性要优于 SVN。Git 的内容存储使用的是 SHA-1 哈希算法。这能确保代码内容的完整性，确保在遇到磁盘故障和网络问题时降低对版本库的破坏。</li>
 </ol>
-<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/svn-git.jpg" alt="图片来源于 RUNOOB" style="width:400px;"/></div><div class="image-meta"><span class="image-caption center">图片来源于 RUNOOB</span></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/svn-git.jpg" alt="图片来源于 RUNOOB" fancybox="true" style="width:400px;"/></div><div class="image-meta"><span class="image-caption center">图片来源于 RUNOOB</span></div></div>
 
 <h2 id="Git-工作区、暂存区和版本库"><a href="#Git-工作区、暂存区和版本库" class="headerlink" title="Git 工作区、暂存区和版本库"></a>Git 工作区、暂存区和版本库</h2><ul>
 <li>工作区：就是你在电脑里能看到的目录。</li>
@@ -133,7 +137,7 @@ Git 把内容按元数据方式存储，而 SVN...">
 <h2 id="git-ssh"><a href="#git-ssh" class="headerlink" title="git-ssh"></a>git-ssh</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">ssh<span class="operator">-</span>keygen <span class="operator">-</span>t rsa <span class="operator">-</span>C <span class="keyword">user</span><span class="variable">@example</span>.com</span><br></pre></td></tr></table></figure>
 
 <p>其中 <code>user@example.com</code> 对应的是你的 Git 邮箱。</p>
-<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys1.png" style="width:400px;"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys1.png" fancybox="true" style="width:400px;"/></div></div>
 
 
 <p>ssh-agent 是一种控制用来保存公钥身份验证所使用的私钥的程序，其实 ssh-agent 就是一个密钥管理器，运行 ssh-agent 以后，使用 ssh-add 将私钥交给 ssh-agent 保管，其他程序需要身份验证的时候可以将验证申请交给 ssh-agent 来完成整个认证过程。</p>
@@ -142,14 +146,14 @@ Git 把内容按元数据方式存储，而 SVN...">
 <p>添加生成的 SSH key 到 ssh-agent：</p>
 <figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">ssh-add ~<span class="regexp">/.ssh/i</span>d_rsa</span><br></pre></td></tr></table></figure>
 
-<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys2.jpg" style="width:400px;"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys2.jpg" fancybox="true" style="width:400px;"/></div></div>
 
 <p>登陆 Github，添加 ssh：</p>
-<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys3.jpg" style="width:400px;"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys3.jpg" fancybox="true" style="width:400px;"/></div></div>
 
 
 <p>把 id_rsa.pub 文件里的内容复制到这里：</p>
-<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys4.jpg" style="width:400px;"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/ssh-keys4.jpg" fancybox="true" style="width:400px;"/></div></div>
 
 <h1 id="Git使用"><a href="#Git使用" class="headerlink" title="Git使用"></a>Git使用</h1><h2 id="基本操作流程"><a href="#基本操作流程" class="headerlink" title="基本操作流程"></a>基本操作流程</h2><ol>
 <li>在对代码进行了一些修改之后，使用：<code>git add --all</code> 将本地所有新增文件和修改内容添加到暂存区。</li>
@@ -157,7 +161,7 @@ Git 把内容按元数据方式存储，而 SVN...">
 <li>使用：<code>git pull origin</code> 从服务器拉取代码，更新本地版本库。</li>
 <li>使用：<code>git push origin</code> 将本地版本库推送到服务器。</li>
 </ol>
-<span id="more"></span>
+<!-- more -->
 
 
 <h2 id="克隆与配置"><a href="#克隆与配置" class="headerlink" title="克隆与配置"></a>克隆与配置</h2><h3 id="克隆版本库"><a href="#克隆版本库" class="headerlink" title="克隆版本库"></a>克隆版本库</h3><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/xaoxuu/</span>AXKit.git</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/xaoxuu/</span>AXKit.git AXKit</span><br></pre></td></tr></table></figure>
@@ -274,7 +278,7 @@ Git 把内容按元数据方式存储，而 SVN...">
 <details class="tag-plugin folding" ><summary><span>建议设置开机自启动</span></summary><div class="body"><p>通过 Mac 的自动化工具，将启动指令写成脚本，系统启动后自动运行脚本即可。<br>Windows 平台可以添加到启动计划任务中。</p></div></details>
 
 <h2 id="客户端访问"><a href="#客户端访问" class="headerlink" title="客户端访问"></a>客户端访问</h2><p>用服务器 IP + 端口号来访问。例如我的电脑的 IP 是 <code>10.8.12.200</code>，那么在局域网内另外一台电脑访问 <code>http://10.8.12.200:7070</code> 就可以看到管理页面了：</p>
-<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/gitblit01.jpg" style="width:500px;"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/wiki@1.0.2/git/gitblit01.jpg" fancybox="true" style="width:500px;"/></div></div>
 
 <p>网页操作和使用 GitHub、Coding 等平台相似，非常简单。</p>
 <p>#使用Github</p>
@@ -297,13 +301,14 @@ Git 把内容按元数据方式存储，而 SVN...">
 
 
 <div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
-</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/07/21/git/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/07/21/git/&title=git教程 - GO-LINUX&summary=介绍什么是 Git ？Git 是目前世界上最先进的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。
+</div></section><section id="share"><div class="header"><span>分享文章</span></div><div class="body"><div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://go-linux.cn/2022/07/26/git/" /></div><div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/b32ef3da1162a.svg"/></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://go-linux.cn/2022/07/26/git/&title=git教程 - GO-LINUX&summary=
+介绍什么是 Git ？Git 是目前世界上最先进的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。
 Git 与 SVN 区别点
-Git 是分布式的，SVN 不是。这是 Git 和其它非分布式的版本控制系统如 SVN，CVS ..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=git教程 - GO-LINUX&amp;body=https://go-linux.cn/2022/07/21/git/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/07/21/git/index.html"/></div></div></section></div>
+Git 是分布式的，SVN 不是。这是 Git 和其它非分布式的版本控制系统如 SVN，CVS..."><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/80c07e4dbb303.svg"/></a><a class="social share-item email" href="mailto:?subject=git教程 - GO-LINUX&amp;body=https://go-linux.cn/2022/07/26/git/"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/a1b00e20f425d.svg"/></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://fastly.jsdelivr.net/gh/cdn-x/placeholder@1.0.1/social/8411ed322ced6.svg"/></a></div><div class="qrcode" id="qrcode-wechat" style="visibility:hidden;height:0"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://go-linux.cn/2022/07/26/git/index.html"/></div></div></section></div>
 
 </article>
 
-<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/06/01/SPL%E5%91%BD%E4%BB%A4/">SPL命令<span class="note">较早</span></a><div class="line"></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="header cap theme"><span>接下来阅读</span></section><section class="body fs14"><a id="next" href="/2022/06/01/SPL%E5%91%BD%E4%BB%A4/">SPL命令<span class="note">较早</span></a><div class="line"></div><a id="prev" href="/2022/07/29/sed%E7%AC%94%E8%AE%B0/">sed工具使用教程<span class="note">较新</span></a></section></div>
 
 
 
